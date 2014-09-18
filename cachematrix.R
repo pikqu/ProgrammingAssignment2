@@ -1,15 +1,30 @@
-## Put comments here that give an overall description of what your
-## functions do
+## These functions tries to cache matrix inverse calculation using global environment.
 
-## Write a short comment describing this function
-
+## This function creates container object that stores matrix and it's inverse.
 makeCacheMatrix <- function(x = matrix()) {
-
+    inv <- NULL
+    set <- function(y) {
+        x <<- y
+        inv <<- NULL
+    }
+    get <- function() x
+    setinverse <- function(inv_par) inv <<- inv_par
+    getinverse <- function() inv
+    list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
-
+## This function returns inverse of matrix returned by makeCacheMatrix.
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+    ## Return a matrix that is the inverse of 'x'
+    inv <- x$getinverse()
+    
+    if(!is.null(inv)) {
+        message("getting cached inverse of matrix")
+        return(inv)
+    }
+    data <- x$get()
+    inv <- solve(data, ...)
+    x$setinverse(inv)
+    inv
 }
